@@ -1,8 +1,1388 @@
 <!DOCTYPE html>
-<html>
-<head><title>Syntaxer AI</title></head>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Syntaxer AI — Code Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"/>
+<style>
+:root {
+  --bg-void: #020409;
+  --bg-deep: #060d1a;
+  --bg-card: rgba(8, 18, 38, 0.85);
+  --bg-glass: rgba(13, 28, 58, 0.6);
+  --bg-input: rgba(5, 14, 30, 0.9);
+  --border: rgba(0, 200, 255, 0.12);
+  --border-bright: rgba(0, 200, 255, 0.35);
+  --cyan: #00c8ff;
+  --cyan-dim: rgba(0, 200, 255, 0.15);
+  --cyan-glow: rgba(0, 200, 255, 0.4);
+  --green: #00ff88;
+  --green-dim: rgba(0, 255, 136, 0.12);
+  --purple: #a855f7;
+  --purple-dim: rgba(168, 85, 247, 0.15);
+  --red: #ff4455;
+  --red-dim: rgba(255, 68, 85, 0.15);
+  --orange: #ff8c42;
+  --orange-dim: rgba(255, 140, 66, 0.15);
+  --yellow: #ffd60a;
+  --yellow-dim: rgba(255, 214, 10, 0.12);
+  --text-primary: #e8f4ff;
+  --text-secondary: #7ba0c4;
+  --text-muted: #3d5a75;
+  --font-ui: 'Outfit', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-brand: 'Space Mono', monospace;
+  --radius: 12px;
+  --radius-lg: 18px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+body {
+  font-family: var(--font-ui);
+  background: var(--bg-void);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ── CANVAS BG ── */
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── GRID OVERLAY ── */
+.grid-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0,200,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,200,255,0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ── MAIN LAYOUT ── */
+.app-wrapper {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ── NAVBAR ── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 16px 0;
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  background: rgba(2, 4, 9, 0.85);
+}
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+/* ── UPDATED: Custom Logo Icon ── */
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  /* subtle cyan glow to match site palette */
+  box-shadow: 0 0 12px rgba(0, 200, 255, 0.25);
+}
+.brand-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.brand-name {
+  font-family: var(--font-brand);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+.brand-name span { color: var(--cyan); }
+.nav-badge {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  background: var(--cyan-dim);
+  border: 1px solid var(--border-bright);
+  color: var(--cyan);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* ── HERO ── */
+.hero {
+  padding: 80px 0 48px;
+  text-align: center;
+  position: relative;
+}
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 24px;
+  padding: 6px 16px;
+  border: 1px solid var(--border-bright);
+  border-radius: 100px;
+  background: var(--cyan-dim);
+}
+.hero-eyebrow .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--cyan);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:0.4;transform:scale(0.8)}
+}
+.hero h1 {
+  font-family: var(--font-brand);
+  font-size: clamp(36px, 6vw, 68px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -2px;
+  margin-bottom: 20px;
+}
+.hero h1 .grad {
+  background: linear-gradient(90deg, var(--cyan), var(--purple), var(--green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: 18px;
+  color: var(--text-secondary);
+  max-width: 560px;
+  margin: 0 auto 40px;
+  font-weight: 300;
+  line-height: 1.7;
+}
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.stat {
+  text-align: center;
+}
+.stat-num {
+  font-family: var(--font-brand);
+  font-size: 24px;
+  color: var(--cyan);
+  font-weight: 700;
+}
+.stat-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+
+/* ── CARDS / GLASS ── */
+.glass-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+}
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-bright), transparent);
+}
+
+/* ── INPUT PANEL ── */
+.input-panel {
+  margin-bottom: 32px;
+  padding: 32px;
+}
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.panel-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.panel-icon.cyan { background: var(--cyan-dim); border: 1px solid rgba(0,200,255,0.25); }
+.panel-icon.green { background: var(--green-dim); border: 1px solid rgba(0,255,136,0.25); }
+.panel-icon.purple { background: var(--purple-dim); border: 1px solid rgba(168,85,247,0.25); }
+.panel-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.3px;
+}
+.panel-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+/* editor top bar */
+.editor-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.editor-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.editor-dots {
+  display: flex;
+  gap: 6px;
+}
+.dot-r{width:11px;height:11px;border-radius:50%;background:#ff5f57}
+.dot-y{width:11px;height:11px;border-radius:50%;background:#febc2e}
+.dot-g{width:11px;height:11px;border-radius:50%;background:#28c840}
+
+label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 8px;
+}
+
+select, input[type="text"], textarea {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+select:focus, input:focus, textarea:focus {
+  border-color: var(--border-bright);
+  box-shadow: 0 0 0 3px var(--cyan-dim);
+}
+select {
+  padding: 10px 14px;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%237ba0c4' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L2 5h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+select option { background: #060d1a; }
+input[type="text"] { padding: 10px 14px; }
+
+textarea {
+  padding: 16px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  resize: vertical;
+  min-height: 220px;
+  line-height: 1.7;
+  tab-size: 2;
+}
+.char-counter {
+  text-align: right;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+.char-counter.warn { color: var(--orange); }
+
+/* mode selector */
+.mode-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.mode-btn {
+  position: relative;
+  padding: 14px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+  overflow: hidden;
+}
+.mode-btn:hover {
+  border-color: var(--border-bright);
+  background: var(--bg-glass);
+}
+.mode-btn.active {
+  border-color: var(--cyan);
+  background: var(--cyan-dim);
+  box-shadow: 0 0 20px var(--cyan-glow);
+}
+.mode-btn.active.security {
+  border-color: var(--orange);
+  background: var(--orange-dim);
+  box-shadow: 0 0 20px rgba(255,140,66,0.3);
+}
+.mode-btn.active.shield {
+  border-color: var(--green);
+  background: var(--green-dim);
+  box-shadow: 0 0 20px rgba(0,255,136,0.25);
+}
+.mode-icon { font-size: 22px; margin-bottom: 6px; }
+.mode-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: block;
+}
+.mode-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
+/* analyze button */
+.btn-analyze {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font-brand);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s;
+  background: linear-gradient(135deg, var(--cyan) 0%, #0080ff 50%, var(--purple) 100%);
+  color: #000;
+  margin-top: 20px;
+}
+.btn-analyze::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.2));
+  transition: opacity 0.2s;
+  opacity: 0;
+}
+.btn-analyze:hover::before { opacity: 1; }
+.btn-analyze:hover { transform: translateY(-1px); box-shadow: 0 8px 30px rgba(0,200,255,0.35); }
+.btn-analyze:active { transform: translateY(0); }
+.btn-analyze:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+.btn-analyze .btn-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(0,0,0,0.3);
+  border-top-color: #000;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: none;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.btn-analyze.loading .spinner { display: block; }
+.btn-analyze.loading .btn-text { display: none; }
+.btn-analyze.loading .btn-icon { display: none; }
+
+/* row layout */
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { margin-bottom: 20px; }
+
+/* ── RESULTS ── */
+.results-section {
+  display: none;
+  animation: fadeUp 0.5s ease;
+}
+.results-section.visible { display: block; }
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(20px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+.results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.results-title {
+  font-family: var(--font-brand);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.results-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.results-meta .dot { width:6px;height:6px;border-radius:50%;background:var(--green); }
+
+/* tabs */
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--bg-input);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+.tab {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+.tab:hover { color: var(--text-primary); background: var(--bg-glass); }
+.tab.active {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.tab .tab-badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 100px;
+  font-weight: 600;
+}
+.tab.active .tab-badge.debug { background: var(--cyan-dim); color: var(--cyan); border:1px solid rgba(0,200,255,0.3);}
+.tab.active .tab-badge.sec { background: var(--orange-dim); color: var(--orange); border:1px solid rgba(255,140,66,0.3);}
+.tab.active .tab-badge.learn { background: var(--purple-dim); color: var(--purple); border:1px solid rgba(168,85,247,0.3);}
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; animation: fadeUp 0.3s ease; }
+
+/* ── DEBUG PANEL ── */
+.info-card {
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 14px;
+  border: 1px solid;
+  position: relative;
+  overflow: hidden;
+}
+.info-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+}
+.info-card.cyan { background: var(--cyan-dim); border-color: rgba(0,200,255,0.2); }
+.info-card.cyan::before { background: var(--cyan); }
+.info-card.green { background: var(--green-dim); border-color: rgba(0,255,136,0.2); }
+.info-card.green::before { background: var(--green); }
+.info-card.purple { background: var(--purple-dim); border-color: rgba(168,85,247,0.2); }
+.info-card.purple::before { background: var(--purple); }
+.info-card.orange { background: var(--orange-dim); border-color: rgba(255,140,66,0.2); }
+.info-card.orange::before { background: var(--orange); }
+
+.card-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  opacity: 0.7;
+}
+.card-value {
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* fix steps */
+.fix-steps {
+  list-style: none;
+  margin-top: 6px;
+}
+.fix-steps li {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.5;
+  align-items: flex-start;
+}
+.fix-steps li:last-child { border-bottom: none; }
+.step-num {
+  min-width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--cyan-dim);
+  border: 1px solid rgba(0,200,255,0.3);
+  color: var(--cyan);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1px;
+}
+
+/* code block */
+.code-block-wrapper {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin-top: 6px;
+}
+.code-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: rgba(0,0,0,0.4);
+  border-bottom: 1px solid var(--border);
+}
+.code-lang {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.btn-copy {
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-glass);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-weight: 500;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 5px;
+}
+.btn-copy:hover { border-color: var(--cyan); color: var(--cyan); background: var(--cyan-dim); }
+.btn-copy.copied { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+
+pre[class*="language-"] {
+  margin: 0 !important;
+  border-radius: 0 !important;
+  background: rgba(0,5,15,0.95) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 13px !important;
+  max-height: 360px;
+  overflow: auto;
+  padding: 20px !important;
+}
+
+/* ── SECURITY PANEL ── */
+.risk-meter {
+  padding: 24px;
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.risk-ring {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-brand);
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+  position: relative;
+}
+.risk-ring::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  padding: 3px;
+}
+.risk-ring.CRITICAL { background: rgba(255,68,85,0.15); color: var(--red); border: 2px solid var(--red); box-shadow: 0 0 20px rgba(255,68,85,0.4); }
+.risk-ring.HIGH { background: rgba(255,140,66,0.15); color: var(--orange); border: 2px solid var(--orange); box-shadow: 0 0 20px rgba(255,140,66,0.3); }
+.risk-ring.MEDIUM { background: var(--yellow-dim); color: var(--yellow); border: 2px solid var(--yellow); box-shadow: 0 0 20px rgba(255,214,10,0.25); }
+.risk-ring.LOW { background: var(--green-dim); color: var(--green); border: 2px solid var(--green); box-shadow: 0 0 16px rgba(0,255,136,0.2); }
+.risk-ring.SAFE { background: var(--green-dim); color: var(--green); border: 2px solid var(--green); box-shadow: 0 0 16px rgba(0,255,136,0.2); }
+.risk-ring.UNKNOWN { background: var(--bg-glass); color: var(--text-muted); border: 2px solid var(--border); }
+.risk-info { flex: 1; }
+.risk-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+.risk-value { font-size: 22px; font-weight: 700; font-family: var(--font-brand); }
+.risk-value.CRITICAL { color: var(--red); }
+.risk-value.HIGH { color: var(--orange); }
+.risk-value.MEDIUM { color: var(--yellow); }
+.risk-value.LOW, .risk-value.SAFE { color: var(--green); }
+.risk-value.UNKNOWN { color: var(--text-muted); }
+.risk-desc { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+
+/* severity badge */
+.badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 100px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.badge::before { content:''; width:5px;height:5px;border-radius:50%; }
+.badge.CRITICAL { background: rgba(255,68,85,0.18); color: var(--red); border:1px solid rgba(255,68,85,0.4); }
+.badge.CRITICAL::before { background: var(--red); }
+.badge.HIGH { background: rgba(255,140,66,0.18); color: var(--orange); border:1px solid rgba(255,140,66,0.4); }
+.badge.HIGH::before { background: var(--orange); }
+.badge.MEDIUM { background: rgba(255,214,10,0.15); color: var(--yellow); border:1px solid rgba(255,214,10,0.4); }
+.badge.MEDIUM::before { background: var(--yellow); }
+.badge.LOW { background: rgba(0,255,136,0.12); color: var(--green); border:1px solid rgba(0,255,136,0.3); }
+.badge.LOW::before { background: var(--green); }
+
+/* vuln cards */
+.vuln-card {
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+.vuln-card:hover { border-color: var(--border-bright); }
+.vuln-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  cursor: pointer;
+  background: var(--bg-input);
+  user-select: none;
+  gap: 12px;
+}
+.vuln-title-row { display:flex; align-items:center; gap:10px; flex:1; min-width:0; }
+.vuln-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.vuln-line { font-size: 11px; color: var(--text-muted); margin-top: 2px; font-family: var(--font-mono); }
+.vuln-chevron {
+  color: var(--text-muted);
+  font-size: 14px;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.vuln-card.open .vuln-chevron { transform: rotate(180deg); }
+.vuln-body {
+  display: none;
+  padding: 16px 18px;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+}
+.vuln-card.open .vuln-body { display: block; animation: fadeUp 0.2s ease; }
+.vuln-section-title { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; font-weight: 600; }
+.vuln-text { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 14px; }
+.vuln-fix {
+  background: var(--green-dim);
+  border: 1px solid rgba(0,255,136,0.2);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.vuln-fix .vuln-section-title { color: var(--green); }
+.vuln-fix .vuln-text { color: var(--text-primary); margin-bottom: 0; }
+
+.no-vulns {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--text-muted);
+}
+.no-vulns .no-vulns-icon { font-size: 48px; margin-bottom: 12px; }
+.no-vulns-text { font-size: 16px; color: var(--green); font-weight: 600; }
+.no-vulns-sub { font-size: 13px; margin-top: 6px; }
+
+/* ── LEARN PANEL ── */
+.learn-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+.learn-card {
+  border-radius: var(--radius);
+  padding: 22px;
+  position: relative;
+  overflow: hidden;
+}
+.learn-card.concept {
+  background: linear-gradient(135deg, rgba(168,85,247,0.1), rgba(0,200,255,0.08));
+  border: 1px solid rgba(168,85,247,0.25);
+}
+.learn-card.matters {
+  background: var(--cyan-dim);
+  border: 1px solid rgba(0,200,255,0.2);
+}
+.learn-card.tip {
+  background: var(--green-dim);
+  border: 1px solid rgba(0,255,136,0.2);
+}
+.learn-icon { font-size: 28px; margin-bottom: 10px; }
+.learn-label { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; margin-bottom: 8px; opacity: 0.6; }
+.learn-content { font-size: 14px; color: var(--text-primary); line-height: 1.7; }
+.learn-concept-name {
+  font-family: var(--font-brand);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--purple);
+  margin-bottom: 4px;
+}
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  text-align: center;
+  padding: 80px 24px;
+}
+.empty-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  opacity: 0.5;
+  filter: grayscale(0.3);
+}
+.empty-title {
+  font-family: var(--font-brand);
+  font-size: 20px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+.empty-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+  max-width: 400px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ── TOAST ── */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+.toast {
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(20px);
+  font-size: 13px;
+  color: var(--text-primary);
+  pointer-events: all;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 280px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  animation: toastIn 0.3s ease;
+}
+.toast.success { border-color: rgba(0,255,136,0.35); }
+.toast.error { border-color: rgba(255,68,85,0.35); }
+.toast.info { border-color: var(--border-bright); }
+.toast-icon { font-size: 18px; }
+@keyframes toastIn {
+  from { opacity:0; transform: translateX(20px); }
+  to { opacity:1; transform: translateX(0); }
+}
+@keyframes toastOut {
+  to { opacity:0; transform: translateX(20px); }
+}
+
+/* ── FOOTER ── */
+footer {
+  padding: 40px 0;
+  margin-top: 60px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+.footer-text {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.footer-text span { color: var(--cyan); }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,200,255,0.2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,200,255,0.4); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .form-row { grid-template-columns: 1fr; }
+  .mode-grid { grid-template-columns: 1fr; }
+  .tabs { flex-direction: column; }
+  .hero h1 { letter-spacing: -1px; }
+  .hero-stats { gap: 24px; }
+  .input-panel { padding: 20px; }
+  .risk-meter { flex-direction: column; text-align: center; }
+}
+@media (max-width: 480px) {
+  .app-wrapper { padding: 0 16px; }
+  .hero { padding: 48px 0 32px; }
+}
+</style>
+</head>
 <body>
-  <h1>Syntaxer AI — Backend Working</h1>
-  <p>Day 2: Full UI coming tomorrow.</p>
+
+<canvas id="bg-canvas"></canvas>
+<div class="grid-overlay"></div>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-inner">
+    <a class="brand" href="#">
+      <div class="brand-icon">
+        <img src="static/SLOGO.png" alt="Syntaxer AI Logo"/>
+      </div>
+      <span class="brand-name">Syntaxer<span>AI</span></span>
+    </a>
+    <span class="nav-badge">Beta v1.0</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="app-wrapper">
+  <section class="hero">
+    <div class="hero-eyebrow">
+      <span class="dot"></span>
+      AI-Powered Code Intelligence
+    </div>
+    <h1>Debug smarter.<br/><span class="grad">Ship securely.</span></h1>
+    <p class="hero-sub">Paste your code and let Syntaxer AI find the bugs, expose the vulnerabilities, and teach you how to write better software — instantly.</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">3</div><div class="stat-label">Analysis Modes</div></div>
+      <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Languages</div></div>
+      <div class="stat"><div class="stat-num">&lt;5s</div><div class="stat-label">Avg Response</div></div>
+    </div>
+  </section>
+
+  <!-- INPUT PANEL -->
+  <div class="glass-card input-panel">
+    <div class="panel-header">
+      <div class="panel-icon cyan">💻</div>
+      <span class="panel-title">Code Analysis</span>
+      <span class="panel-sub">Powered by Gemini 2.5 Flash</span>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Language</label>
+        <select id="language">
+          <option value="python">Python</option>
+          <option value="javascript">JavaScript</option>
+          <option value="typescript">TypeScript</option>
+          <option value="java">Java</option>
+          <option value="c">C</option>
+          <option value="cpp">C++</option>
+          <option value="go">Go</option>
+          <option value="rust">Rust</option>
+          <option value="php">PHP</option>
+          <option value="ruby">Ruby</option>
+          <option value="bash">Bash / Shell</option>
+          <option value="sql">SQL</option>
+          <option value="kotlin">Kotlin</option>
+          <option value="swift">Swift</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Error Message <span style="font-size:11px;color:var(--text-muted);text-transform:none;letter-spacing:0">(optional)</span></label>
+        <input type="text" id="error-message" placeholder="e.g. TypeError: 'NoneType' object is not subscriptable"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="editor-topbar">
+        <div class="editor-topbar-left">
+          <div class="editor-dots"><div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div></div>
+          <label style="margin:0;font-size:12px">Code Editor</label>
+        </div>
+      </div>
+      <textarea id="code-input" placeholder="// Paste your code here...&#10;&#10;function fetchUser(id) {&#10;  const query = 'SELECT * FROM users WHERE id=' + id;&#10;  return db.execute(query);&#10;}" spellcheck="false"></textarea>
+      <div class="char-counter" id="char-counter">0 / 5000 characters</div>
+    </div>
+
+    <div class="form-group">
+      <label>Analysis Mode</label>
+      <div class="mode-grid">
+        <button class="mode-btn debug" data-mode="debug" onclick="selectMode(this)">
+          <div class="mode-icon">🔍</div>
+          <span class="mode-label">Debug</span>
+          <div class="mode-desc">Find & fix bugs</div>
+        </button>
+        <button class="mode-btn security" data-mode="security" onclick="selectMode(this)">
+          <div class="mode-icon">🛡️</div>
+          <span class="mode-label">Security</span>
+          <div class="mode-desc">Scan vulnerabilities</div>
+        </button>
+        <button class="mode-btn shield active" data-mode="shield" onclick="selectMode(this)">
+          <div class="mode-icon">⚡</div>
+          <span class="mode-label">Shield Scan</span>
+          <div class="mode-desc">Full analysis</div>
+        </button>
+      </div>
+    </div>
+
+    <button class="btn-analyze" id="analyze-btn" onclick="runAnalysis()">
+      <div class="btn-inner">
+        <div class="spinner"></div>
+        <span class="btn-icon">⚡</span>
+        <span class="btn-text">Analyze Code</span>
+      </div>
+    </button>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div id="empty-state" class="glass-card empty-state">
+    <div class="empty-icon">🔬</div>
+    <div class="empty-title">Ready to analyze</div>
+    <div class="empty-sub">Paste your code above, choose a mode, and click Analyze. Syntaxer AI will break down every bug and security risk in seconds.</div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results-section" id="results-section">
+    <div class="results-header">
+      <span class="results-title">Analysis Results</span>
+      <span class="results-meta"><span class="dot"></span><span id="results-time">Completed</span></span>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('debug', this)">
+        🔍 Debug <span class="tab-badge debug" id="debug-badge"></span>
+      </button>
+      <button class="tab" onclick="switchTab('security', this)">
+        🛡️ Security <span class="tab-badge sec" id="sec-badge"></span>
+      </button>
+      <button class="tab" onclick="switchTab('learn', this)">
+        📚 Learn <span class="tab-badge learn">1</span>
+      </button>
+    </div>
+
+    <!-- DEBUG TAB -->
+    <div class="tab-panel active" id="tab-debug">
+      <div id="debug-content"></div>
+    </div>
+
+    <!-- SECURITY TAB -->
+    <div class="tab-panel" id="tab-security">
+      <div id="security-content"></div>
+    </div>
+
+    <!-- LEARN TAB -->
+    <div class="tab-panel" id="tab-learn">
+      <div id="learn-content"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-text">Built with <span>Syntaxer AI</span> · Powered by Gemini 2.5 Flash · For developers, by developers</div>
+  </footer>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- PRISM JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-go.min.js"></script>
+
+<script>
+// ── CANVAS PARTICLES ──
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+let W, H;
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+function createParticles() {
+  particles = [];
+  const count = Math.floor((W * H) / 18000);
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.5 + 0.3,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      alpha: Math.random() * 0.5 + 0.1,
+      color: Math.random() > 0.6 ? '#00c8ff' : Math.random() > 0.5 ? '#a855f7' : '#00ff88'
+    });
+  }
+}
+createParticles();
+window.addEventListener('resize', createParticles);
+
+function drawParticles() {
+  ctx.clearRect(0, 0, W, H);
+  particles.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = p.alpha;
+    ctx.fill();
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+    if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+  });
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+// ── MODE SELECT ──
+let selectedMode = 'shield';
+function selectMode(el) {
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  selectedMode = el.dataset.mode;
+}
+
+// ── CHAR COUNTER ──
+const codeInput = document.getElementById('code-input');
+const charCounter = document.getElementById('char-counter');
+codeInput.addEventListener('input', () => {
+  const len = codeInput.value.length;
+  charCounter.textContent = `${len.toLocaleString()} / 5,000 characters`;
+  charCounter.className = 'char-counter' + (len > 4500 ? ' warn' : '');
+});
+
+// ── TABS ──
+function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+// ── TOAST ──
+function showToast(msg, type='info', duration=3500) {
+  const icons = { success:'✅', error:'❌', info:'💡' };
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span class="toast-icon">${icons[type]}</span><span>${msg}</span>`;
+  c.appendChild(t);
+  setTimeout(() => {
+    t.style.animation = 'toastOut 0.3s ease forwards';
+    setTimeout(() => t.remove(), 300);
+  }, duration);
+}
+
+// ── COPY ──
+function copyCode(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    btn.innerHTML = '✓ Copied';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = '⎘ Copy';
+    }, 2000);
+    showToast('Code copied to clipboard', 'success');
+  });
+}
+
+// ── BUILD DEBUG HTML ──
+function buildDebug(data, lang) {
+  const d = data.debug;
+  const statusIcon = d.has_bug ? '🐛' : '✅';
+  const statusColor = d.has_bug ? 'orange' : 'green';
+
+  const steps = (d.fix_steps || []).map((s, i) =>
+    `<li><span class="step-num">${i+1}</span>${escHtml(s)}</li>`
+  ).join('');
+
+  const codeId = 'code-' + Date.now();
+  const safeCode = escHtml(d.corrected_code || '');
+
+  return `
+    <div class="info-card ${statusColor}" style="margin-bottom:14px">
+      <div class="card-label">Root Cause ${statusIcon}</div>
+      <div class="card-value" style="font-weight:600;font-size:15px">${escHtml(d.root_cause)}</div>
+    </div>
+    <div class="info-card cyan">
+      <div class="card-label">Explanation</div>
+      <div class="card-value">${escHtml(d.explanation)}</div>
+    </div>
+    ${steps ? `
+    <div class="info-card purple" style="margin-top:14px">
+      <div class="card-label">Fix Steps</div>
+      <ul class="fix-steps">${steps}</ul>
+    </div>` : ''}
+    <div style="margin-top:14px">
+      <label>Corrected Code</label>
+      <div class="code-block-wrapper">
+        <div class="code-topbar">
+          <span class="code-lang">${escHtml(lang)}</span>
+          <button class="btn-copy" onclick="copyCode(this, document.getElementById('${codeId}').textContent)">⎘ Copy</button>
+        </div>
+        <pre class="language-${lang}"><code id="${codeId}" class="language-${lang}">${safeCode}</code></pre>
+      </div>
+    </div>`;
+}
+
+// ── BUILD SECURITY HTML ──
+function buildSecurity(data) {
+  const s = data.security;
+  const vulns = s.vulnerabilities || [];
+  const riskDescMap = {
+    CRITICAL: 'Immediate action required — severe exploitable vulnerabilities found.',
+    HIGH: 'Serious vulnerabilities present — fix before deploying.',
+    MEDIUM: 'Moderate risks detected — review and address soon.',
+    LOW: 'Minor concerns found — low exploitation risk.',
+    SAFE: 'No vulnerabilities detected — code looks secure.',
+    UNKNOWN: 'Analysis incomplete.'
+  };
+
+  const vulnCards = vulns.map((v, i) => `
+    <div class="vuln-card" id="vuln-${i}">
+      <div class="vuln-header" onclick="toggleVuln(${i})">
+        <div class="vuln-title-row">
+          <span class="badge ${v.severity}">${v.severity}</span>
+          <div>
+            <div class="vuln-title">${escHtml(v.title)}</div>
+            <div class="vuln-line">${escHtml(v.line_hint || '')}</div>
+          </div>
+        </div>
+        <span class="vuln-chevron">▾</span>
+      </div>
+      <div class="vuln-body">
+        <div class="vuln-section-title">What is this?</div>
+        <div class="vuln-text">${escHtml(v.explanation)}</div>
+        <div class="vuln-fix">
+          <div class="vuln-section-title">How to fix</div>
+          <div class="vuln-text">${escHtml(v.fix)}</div>
+        </div>
+      </div>
+    </div>`).join('');
+
+  const noVulns = `
+    <div class="no-vulns">
+      <div class="no-vulns-icon">🛡️</div>
+      <div class="no-vulns-text">No vulnerabilities detected</div>
+      <div class="no-vulns-sub">Your code passed the security scan cleanly.</div>
+    </div>`;
+
+  return `
+    <div class="risk-meter">
+      <div class="risk-ring ${s.overall_risk}">${s.overall_risk === 'SAFE' ? '✓' : s.overall_risk?.[0] || '?'}</div>
+      <div class="risk-info">
+        <div class="risk-label">Overall Risk Level</div>
+        <div class="risk-value ${s.overall_risk}">${s.overall_risk || 'UNKNOWN'}</div>
+        <div class="risk-desc">${riskDescMap[s.overall_risk] || ''}</div>
+      </div>
+    </div>
+    ${vulns.length > 0 ? `<label style="margin-bottom:12px">${vulns.length} Vulnerabilit${vulns.length===1?'y':'ies'} Found</label>${vulnCards}` : noVulns}`;
+}
+
+// ── BUILD LEARN HTML ──
+function buildLearn(data) {
+  const l = data.learn;
+  return `
+    <div class="learn-grid">
+      <div class="learn-card concept">
+        <div class="learn-icon">🧠</div>
+        <div class="learn-label">Key Concept</div>
+        <div class="learn-concept-name">${escHtml(l.concept)}</div>
+      </div>
+      <div class="learn-card matters">
+        <div class="learn-icon">⚠️</div>
+        <div class="learn-label">Why It Matters</div>
+        <div class="learn-content">${escHtml(l.why_it_matters)}</div>
+      </div>
+      <div class="learn-card tip">
+        <div class="learn-icon">💡</div>
+        <div class="learn-label">Actionable Tip</div>
+        <div class="learn-content">${escHtml(l.tip)}</div>
+      </div>
+    </div>`;
+}
+
+// ── TOGGLE VULN ──
+function toggleVuln(i) {
+  document.getElementById('vuln-' + i).classList.toggle('open');
+}
+
+// ── ESC HTML ──
+function escHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+// ── MAIN ANALYSIS ──
+async function runAnalysis() {
+  const code = codeInput.value.trim();
+  const lang = document.getElementById('language').value;
+  const errMsg = document.getElementById('error-message').value.trim();
+
+  if (!code) {
+    showToast('Please paste some code first.', 'error');
+    return;
+  }
+  if (code.length > 5000) {
+    showToast('Code exceeds 5,000 characters. Please shorten it.', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('analyze-btn');
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  document.getElementById('empty-state').style.display = 'none';
+  document.getElementById('results-section').classList.remove('visible');
+
+  const start = Date.now();
+
+  try {
+    const res = await fetch('/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code, language: lang, error_message: errMsg, mode: selectedMode })
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || `Server error ${res.status}`);
+    }
+
+    const data = await res.json();
+    const elapsed = ((Date.now() - start) / 1000).toFixed(1);
+
+    // Render
+    document.getElementById('debug-content').innerHTML = buildDebug(data, lang);
+    document.getElementById('security-content').innerHTML = buildSecurity(data);
+    document.getElementById('learn-content').innerHTML = buildLearn(data);
+
+    // Badges
+    const hasBug = data.debug?.has_bug;
+    const vulnCount = data.security?.vulnerabilities?.length || 0;
+    document.getElementById('debug-badge').textContent = hasBug ? '1 bug' : 'clean';
+    document.getElementById('sec-badge').textContent = vulnCount > 0 ? `${vulnCount} found` : 'safe';
+
+    document.getElementById('results-time').textContent = `Completed in ${elapsed}s`;
+    document.getElementById('results-section').classList.add('visible');
+
+    // Re-highlight
+    Prism.highlightAll();
+
+    // Auto-switch to most relevant tab
+    if (selectedMode === 'debug') switchTab('debug', document.querySelector('.tab'));
+    else if (selectedMode === 'security') {
+      document.querySelectorAll('.tab')[1].click();
+    }
+
+    document.getElementById('results-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    showToast(`Analysis complete in ${elapsed}s`, 'success');
+
+  } catch (e) {
+    document.getElementById('empty-state').style.display = '';
+    showToast(e.message || 'Something went wrong. Please try again.', 'error');
+  } finally {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+  }
+}
+
+// Enter key shortcut hint
+codeInput.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.key === 'Enter') runAnalysis();
+});
+</script>
 </body>
 </html>
