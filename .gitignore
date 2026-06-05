@@ -3,3 +3,6 @@ venv/
 __pycache__/
 *.pyc
 .DS_Store
+echo "docs/Demo.zip" >> .gitignore
+echo "docs/Demo.mp4" >> .gitignore
+echo "docs/Demo.mp4.bz2" >> .gitignore
