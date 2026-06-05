@@ -51,7 +51,6 @@ body {
   line-height: 1.6;
 }
 
-/* ── CANVAS BG ── */
 #bg-canvas {
   position: fixed;
   inset: 0;
@@ -59,7 +58,6 @@ body {
   pointer-events: none;
 }
 
-/* ── GRID OVERLAY ── */
 .grid-overlay {
   position: fixed;
   inset: 0;
@@ -71,7 +69,6 @@ body {
   background-size: 60px 60px;
 }
 
-/* ── MAIN LAYOUT ── */
 .app-wrapper {
   position: relative;
   z-index: 1;
@@ -104,8 +101,6 @@ nav {
   gap: 12px;
   text-decoration: none;
 }
-
-/* ── UPDATED: Custom Logo Icon ── */
 .brand-icon {
   width: 40px;
   height: 40px;
@@ -115,7 +110,6 @@ nav {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  /* subtle cyan glow to match site palette */
   box-shadow: 0 0 12px rgba(0, 200, 255, 0.25);
 }
 .brand-icon img {
@@ -124,7 +118,6 @@ nav {
   object-fit: cover;
   display: block;
 }
-
 .brand-name {
   font-family: var(--font-brand);
   font-size: 18px;
@@ -202,9 +195,7 @@ nav {
   gap: 40px;
   flex-wrap: wrap;
 }
-.stat {
-  text-align: center;
-}
+.stat { text-align: center; }
 .stat-num {
   font-family: var(--font-brand);
   font-size: 24px;
@@ -219,7 +210,7 @@ nav {
   margin-top: 2px;
 }
 
-/* ── CARDS / GLASS ── */
+/* ── GLASS CARD ── */
 .glass-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -266,9 +257,10 @@ nav {
   font-size: 12px;
   color: var(--text-muted);
   margin-left: auto;
+  transition: color 0.3s;
 }
 
-/* editor top bar */
+/* editor topbar */
 .editor-topbar {
   display: flex;
   align-items: center;
@@ -282,10 +274,7 @@ nav {
   align-items: center;
   gap: 10px;
 }
-.editor-dots {
-  display: flex;
-  gap: 6px;
-}
+.editor-dots { display: flex; gap: 6px; }
 .dot-r{width:11px;height:11px;border-radius:50%;background:#ff5f57}
 .dot-y{width:11px;height:11px;border-radius:50%;background:#febc2e}
 .dot-g{width:11px;height:11px;border-radius:50%;background:#28c840}
@@ -343,6 +332,75 @@ textarea {
   margin-top: 6px;
 }
 .char-counter.warn { color: var(--orange); }
+
+/* ── PROVIDER SELECTOR ── */
+.provider-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.provider-select-wrap { position: relative; }
+
+/* provider pill badges */
+.provider-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.provider-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.provider-pill:hover {
+  border-color: var(--border-bright);
+  color: var(--text-secondary);
+}
+.provider-pill.active-pill {
+  border-color: var(--cyan);
+  background: var(--cyan-dim);
+  color: var(--cyan);
+}
+.provider-pill .pill-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.7;
+}
+
+/* active provider indicator in panel header */
+.provider-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 100px;
+  background: var(--cyan-dim);
+  border: 1px solid var(--border-bright);
+  color: var(--cyan);
+  font-weight: 500;
+  margin-left: auto;
+  transition: all 0.3s;
+}
+.provider-indicator .ind-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--cyan);
+  animation: pulse 2s infinite;
+}
 
 /* mode selector */
 .mode-grid {
@@ -423,11 +481,7 @@ textarea {
 .btn-analyze:hover::before { opacity: 1; }
 .btn-analyze:hover { transform: translateY(-1px); box-shadow: 0 8px 30px rgba(0,200,255,0.35); }
 .btn-analyze:active { transform: translateY(0); }
-.btn-analyze:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
+.btn-analyze:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 .btn-analyze .btn-inner {
   display: flex;
   align-items: center;
@@ -447,21 +501,16 @@ textarea {
 .btn-analyze.loading .btn-text { display: none; }
 .btn-analyze.loading .btn-icon { display: none; }
 
-/* row layout */
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .form-group { margin-bottom: 20px; }
 
 /* ── RESULTS ── */
-.results-section {
-  display: none;
-  animation: fadeUp 0.5s ease;
-}
+.results-section { display: none; animation: fadeUp 0.5s ease; }
 .results-section.visible { display: block; }
 @keyframes fadeUp {
   from { opacity:0; transform:translateY(20px); }
   to { opacity:1; transform:translateY(0); }
 }
-
 .results-header {
   display: flex;
   align-items: center;
@@ -484,6 +533,17 @@ textarea {
   gap: 6px;
 }
 .results-meta .dot { width:6px;height:6px;border-radius:50%;background:var(--green); }
+
+/* result provider tag */
+.result-provider-tag {
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 100px;
+  background: var(--purple-dim);
+  border: 1px solid rgba(168,85,247,0.3);
+  color: var(--purple);
+  font-weight: 500;
+}
 
 /* tabs */
 .tabs {
@@ -513,21 +573,11 @@ textarea {
   gap: 7px;
 }
 .tab:hover { color: var(--text-primary); background: var(--bg-glass); }
-.tab.active {
-  background: var(--bg-card);
-  color: var(--text-primary);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-}
-.tab .tab-badge {
-  font-size: 10px;
-  padding: 2px 6px;
-  border-radius: 100px;
-  font-weight: 600;
-}
-.tab.active .tab-badge.debug { background: var(--cyan-dim); color: var(--cyan); border:1px solid rgba(0,200,255,0.3);}
-.tab.active .tab-badge.sec { background: var(--orange-dim); color: var(--orange); border:1px solid rgba(255,140,66,0.3);}
-.tab.active .tab-badge.learn { background: var(--purple-dim); color: var(--purple); border:1px solid rgba(168,85,247,0.3);}
-
+.tab.active { background: var(--bg-card); color: var(--text-primary); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.tab .tab-badge { font-size: 10px; padding: 2px 6px; border-radius: 100px; font-weight: 600; }
+.tab.active .tab-badge.debug { background: var(--cyan-dim); color: var(--cyan); border:1px solid rgba(0,200,255,0.3); }
+.tab.active .tab-badge.sec { background: var(--orange-dim); color: var(--orange); border:1px solid rgba(255,140,66,0.3); }
+.tab.active .tab-badge.learn { background: var(--purple-dim); color: var(--purple); border:1px solid rgba(168,85,247,0.3); }
 .tab-panel { display: none; }
 .tab-panel.active { display: block; animation: fadeUp 0.3s ease; }
 
@@ -554,7 +604,6 @@ textarea {
 .info-card.purple::before { background: var(--purple); }
 .info-card.orange { background: var(--orange-dim); border-color: rgba(255,140,66,0.2); }
 .info-card.orange::before { background: var(--orange); }
-
 .card-label {
   font-size: 10px;
   text-transform: uppercase;
@@ -563,17 +612,9 @@ textarea {
   margin-bottom: 8px;
   opacity: 0.7;
 }
-.card-value {
-  font-size: 14px;
-  color: var(--text-primary);
-  line-height: 1.6;
-}
+.card-value { font-size: 14px; color: var(--text-primary); line-height: 1.6; }
 
-/* fix steps */
-.fix-steps {
-  list-style: none;
-  margin-top: 6px;
-}
+.fix-steps { list-style: none; margin-top: 6px; }
 .fix-steps li {
   display: flex;
   gap: 12px;
@@ -597,7 +638,6 @@ textarea {
   margin-top: 1px;
 }
 
-/* code block */
 .code-block-wrapper {
   position: relative;
   border-radius: var(--radius);
@@ -668,13 +708,6 @@ pre[class*="language-"] {
   flex-shrink: 0;
   position: relative;
 }
-.risk-ring::before {
-  content: '';
-  position: absolute;
-  inset: -3px;
-  border-radius: 50%;
-  padding: 3px;
-}
 .risk-ring.CRITICAL { background: rgba(255,68,85,0.15); color: var(--red); border: 2px solid var(--red); box-shadow: 0 0 20px rgba(255,68,85,0.4); }
 .risk-ring.HIGH { background: rgba(255,140,66,0.15); color: var(--orange); border: 2px solid var(--orange); box-shadow: 0 0 20px rgba(255,140,66,0.3); }
 .risk-ring.MEDIUM { background: var(--yellow-dim); color: var(--yellow); border: 2px solid var(--yellow); box-shadow: 0 0 20px rgba(255,214,10,0.25); }
@@ -691,7 +724,6 @@ pre[class*="language-"] {
 .risk-value.UNKNOWN { color: var(--text-muted); }
 .risk-desc { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
 
-/* severity badge */
 .badge {
   font-size: 10px;
   font-weight: 700;
@@ -713,7 +745,6 @@ pre[class*="language-"] {
 .badge.LOW { background: rgba(0,255,136,0.12); color: var(--green); border:1px solid rgba(0,255,136,0.3); }
 .badge.LOW::before { background: var(--green); }
 
-/* vuln cards */
 .vuln-card {
   border-radius: var(--radius);
   border: 1px solid var(--border);
@@ -735,12 +766,7 @@ pre[class*="language-"] {
 .vuln-title-row { display:flex; align-items:center; gap:10px; flex:1; min-width:0; }
 .vuln-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
 .vuln-line { font-size: 11px; color: var(--text-muted); margin-top: 2px; font-family: var(--font-mono); }
-.vuln-chevron {
-  color: var(--text-muted);
-  font-size: 14px;
-  transition: transform 0.2s;
-  flex-shrink: 0;
-}
+.vuln-chevron { color: var(--text-muted); font-size: 14px; transition: transform 0.2s; flex-shrink: 0; }
 .vuln-card.open .vuln-chevron { transform: rotate(180deg); }
 .vuln-body {
   display: none;
@@ -759,75 +785,27 @@ pre[class*="language-"] {
 }
 .vuln-fix .vuln-section-title { color: var(--green); }
 .vuln-fix .vuln-text { color: var(--text-primary); margin-bottom: 0; }
-
-.no-vulns {
-  text-align: center;
-  padding: 48px 24px;
-  color: var(--text-muted);
-}
+.no-vulns { text-align: center; padding: 48px 24px; color: var(--text-muted); }
 .no-vulns .no-vulns-icon { font-size: 48px; margin-bottom: 12px; }
 .no-vulns-text { font-size: 16px; color: var(--green); font-weight: 600; }
 .no-vulns-sub { font-size: 13px; margin-top: 6px; }
 
 /* ── LEARN PANEL ── */
-.learn-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 14px;
-}
-.learn-card {
-  border-radius: var(--radius);
-  padding: 22px;
-  position: relative;
-  overflow: hidden;
-}
-.learn-card.concept {
-  background: linear-gradient(135deg, rgba(168,85,247,0.1), rgba(0,200,255,0.08));
-  border: 1px solid rgba(168,85,247,0.25);
-}
-.learn-card.matters {
-  background: var(--cyan-dim);
-  border: 1px solid rgba(0,200,255,0.2);
-}
-.learn-card.tip {
-  background: var(--green-dim);
-  border: 1px solid rgba(0,255,136,0.2);
-}
+.learn-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+.learn-card { border-radius: var(--radius); padding: 22px; position: relative; overflow: hidden; }
+.learn-card.concept { background: linear-gradient(135deg, rgba(168,85,247,0.1), rgba(0,200,255,0.08)); border: 1px solid rgba(168,85,247,0.25); }
+.learn-card.matters { background: var(--cyan-dim); border: 1px solid rgba(0,200,255,0.2); }
+.learn-card.tip { background: var(--green-dim); border: 1px solid rgba(0,255,136,0.2); }
 .learn-icon { font-size: 28px; margin-bottom: 10px; }
 .learn-label { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; margin-bottom: 8px; opacity: 0.6; }
 .learn-content { font-size: 14px; color: var(--text-primary); line-height: 1.7; }
-.learn-concept-name {
-  font-family: var(--font-brand);
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--purple);
-  margin-bottom: 4px;
-}
+.learn-concept-name { font-family: var(--font-brand); font-size: 22px; font-weight: 700; color: var(--purple); margin-bottom: 4px; }
 
 /* ── EMPTY STATE ── */
-.empty-state {
-  text-align: center;
-  padding: 80px 24px;
-}
-.empty-icon {
-  font-size: 64px;
-  margin-bottom: 20px;
-  opacity: 0.5;
-  filter: grayscale(0.3);
-}
-.empty-title {
-  font-family: var(--font-brand);
-  font-size: 20px;
-  color: var(--text-secondary);
-  margin-bottom: 10px;
-}
-.empty-sub {
-  font-size: 14px;
-  color: var(--text-muted);
-  max-width: 400px;
-  margin: 0 auto;
-  line-height: 1.6;
-}
+.empty-state { text-align: center; padding: 80px 24px; }
+.empty-icon { font-size: 64px; margin-bottom: 20px; opacity: 0.5; filter: grayscale(0.3); }
+.empty-title { font-family: var(--font-brand); font-size: 20px; color: var(--text-secondary); margin-bottom: 10px; }
+.empty-sub { font-size: 14px; color: var(--text-muted); max-width: 400px; margin: 0 auto; line-height: 1.6; }
 
 /* ── TOAST ── */
 .toast-container {
@@ -869,16 +847,8 @@ pre[class*="language-"] {
 }
 
 /* ── FOOTER ── */
-footer {
-  padding: 40px 0;
-  margin-top: 60px;
-  border-top: 1px solid var(--border);
-  text-align: center;
-}
-.footer-text {
-  font-size: 13px;
-  color: var(--text-muted);
-}
+footer { padding: 40px 0; margin-top: 60px; border-top: 1px solid var(--border); text-align: center; }
+.footer-text { font-size: 13px; color: var(--text-muted); }
 .footer-text span { color: var(--cyan); }
 
 /* ── SCROLLBAR ── */
@@ -890,6 +860,7 @@ footer {
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
   .form-row { grid-template-columns: 1fr; }
+  .provider-row { grid-template-columns: 1fr; }
   .mode-grid { grid-template-columns: 1fr; }
   .tabs { flex-direction: column; }
   .hero h1 { letter-spacing: -1px; }
@@ -932,7 +903,7 @@ footer {
     <p class="hero-sub">Paste your code and let Syntaxer AI find the bugs, expose the vulnerabilities, and teach you how to write better software — instantly.</p>
     <div class="hero-stats">
       <div class="stat"><div class="stat-num">3</div><div class="stat-label">Analysis Modes</div></div>
-      <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Languages</div></div>
+      <div class="stat"><div class="stat-num">5</div><div class="stat-label">AI Providers</div></div>
       <div class="stat"><div class="stat-num">&lt;5s</div><div class="stat-label">Avg Response</div></div>
     </div>
   </section>
@@ -942,9 +913,13 @@ footer {
     <div class="panel-header">
       <div class="panel-icon cyan">💻</div>
       <span class="panel-title">Code Analysis</span>
-      <span class="panel-sub">Powered by Gemini 2.5 Flash</span>
+      <span class="provider-indicator" id="provider-indicator">
+        <span class="ind-dot"></span>
+        <span id="indicator-text">Gemini 2.5 Flash</span>
+      </span>
     </div>
 
+    <!-- Row 1: Language + Error -->
     <div class="form-row">
       <div class="form-group">
         <label>Language</label>
@@ -971,6 +946,32 @@ footer {
       </div>
     </div>
 
+    <!-- Row 2: AI Provider -->
+    <div class="form-group">
+      <label>AI Provider</label>
+      <div class="provider-row">
+        <div class="provider-select-wrap">
+          <select id="provider-select" onchange="updateProvider()">
+            <option value="gemini">⚡ Gemini 2.5 Flash — Google</option>
+            <option value="gpt4o-mini">🤖 GPT-4o Mini — OpenAI</option>
+            <option value="claude">🔮 Claude Haiku — Anthropic</option>
+            <option value="llama">🦙 Llama 3.3 70B — Meta (Free)</option>
+            <option value="mistral">✨ Mistral 7B — Mistral (Free)</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:center">
+          <div class="provider-pills" id="provider-pills">
+            <span class="provider-pill active-pill" data-val="gemini" onclick="quickPick('gemini')"><span class="pill-dot"></span>Gemini</span>
+            <span class="provider-pill" data-val="gpt4o-mini" onclick="quickPick('gpt4o-mini')"><span class="pill-dot"></span>GPT-4o</span>
+            <span class="provider-pill" data-val="claude" onclick="quickPick('claude')"><span class="pill-dot"></span>Claude</span>
+            <span class="provider-pill" data-val="llama" onclick="quickPick('llama')"><span class="pill-dot"></span>Llama</span>
+            <span class="provider-pill" data-val="mistral" onclick="quickPick('mistral')"><span class="pill-dot"></span>Mistral</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Code editor -->
     <div class="form-group">
       <div class="editor-topbar">
         <div class="editor-topbar-left">
@@ -982,6 +983,7 @@ footer {
       <div class="char-counter" id="char-counter">0 / 5000 characters</div>
     </div>
 
+    <!-- Analysis Mode -->
     <div class="form-group">
       <label>Analysis Mode</label>
       <div class="mode-grid">
@@ -1016,14 +1018,17 @@ footer {
   <div id="empty-state" class="glass-card empty-state">
     <div class="empty-icon">🔬</div>
     <div class="empty-title">Ready to analyze</div>
-    <div class="empty-sub">Paste your code above, choose a mode, and click Analyze. Syntaxer AI will break down every bug and security risk in seconds.</div>
+    <div class="empty-sub">Paste your code above, choose a provider and mode, then click Analyze. Syntaxer AI will break down every bug and security risk in seconds.</div>
   </div>
 
   <!-- RESULTS -->
   <div class="results-section" id="results-section">
     <div class="results-header">
       <span class="results-title">Analysis Results</span>
-      <span class="results-meta"><span class="dot"></span><span id="results-time">Completed</span></span>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <span class="result-provider-tag" id="result-provider-tag"></span>
+        <span class="results-meta"><span class="dot"></span><span id="results-time">Completed</span></span>
+      </div>
     </div>
 
     <div class="tabs">
@@ -1038,24 +1043,19 @@ footer {
       </button>
     </div>
 
-    <!-- DEBUG TAB -->
     <div class="tab-panel active" id="tab-debug">
       <div id="debug-content"></div>
     </div>
-
-    <!-- SECURITY TAB -->
     <div class="tab-panel" id="tab-security">
       <div id="security-content"></div>
     </div>
-
-    <!-- LEARN TAB -->
     <div class="tab-panel" id="tab-learn">
       <div id="learn-content"></div>
     </div>
   </div>
 
   <footer>
-    <div class="footer-text">Built with <span>Syntaxer AI</span> · Powered by Gemini 2.5 Flash · For developers, by developers</div>
+    <div class="footer-text">Built with <span>Syntaxer AI</span> · Multi-Provider AI · For developers, by developers</div>
   </footer>
 </div>
 
@@ -1079,24 +1079,17 @@ const canvas = document.getElementById('bg-canvas');
 const ctx = canvas.getContext('2d');
 let particles = [];
 let W, H;
-
-function resize() {
-  W = canvas.width = window.innerWidth;
-  H = canvas.height = window.innerHeight;
-}
+function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
 resize();
 window.addEventListener('resize', resize);
-
 function createParticles() {
   particles = [];
   const count = Math.floor((W * H) / 18000);
   for (let i = 0; i < count; i++) {
     particles.push({
-      x: Math.random() * W,
-      y: Math.random() * H,
+      x: Math.random() * W, y: Math.random() * H,
       r: Math.random() * 1.5 + 0.3,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
+      vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
       alpha: Math.random() * 0.5 + 0.1,
       color: Math.random() > 0.6 ? '#00c8ff' : Math.random() > 0.5 ? '#a855f7' : '#00ff88'
     });
@@ -1104,15 +1097,11 @@ function createParticles() {
 }
 createParticles();
 window.addEventListener('resize', createParticles);
-
 function drawParticles() {
   ctx.clearRect(0, 0, W, H);
   particles.forEach(p => {
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-    ctx.fillStyle = p.color;
-    ctx.globalAlpha = p.alpha;
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = p.color; ctx.globalAlpha = p.alpha; ctx.fill();
     p.x += p.vx; p.y += p.vy;
     if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
     if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
@@ -1121,6 +1110,29 @@ function drawParticles() {
   requestAnimationFrame(drawParticles);
 }
 drawParticles();
+
+// ── PROVIDER CONFIG ──
+const PROVIDER_LABELS = {
+  'gemini':    'Gemini 2.5 Flash',
+  'gpt4o-mini':'GPT-4o Mini',
+  'claude':    'Claude Haiku',
+  'llama':     'Llama 3.3 70B',
+  'mistral':   'Mistral 7B',
+};
+
+function updateProvider() {
+  const val = document.getElementById('provider-select').value;
+  const label = PROVIDER_LABELS[val] || val;
+  document.getElementById('indicator-text').textContent = label;
+  document.querySelectorAll('.provider-pill').forEach(p => {
+    p.classList.toggle('active-pill', p.dataset.val === val);
+  });
+}
+
+function quickPick(val) {
+  document.getElementById('provider-select').value = val;
+  updateProvider();
+}
 
 // ── MODE SELECT ──
 let selectedMode = 'shield';
@@ -1166,10 +1178,7 @@ function copyCode(btn, text) {
   navigator.clipboard.writeText(text).then(() => {
     btn.classList.add('copied');
     btn.innerHTML = '✓ Copied';
-    setTimeout(() => {
-      btn.classList.remove('copied');
-      btn.innerHTML = '⎘ Copy';
-    }, 2000);
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = '⎘ Copy'; }, 2000);
     showToast('Code copied to clipboard', 'success');
   });
 }
@@ -1179,14 +1188,10 @@ function buildDebug(data, lang) {
   const d = data.debug;
   const statusIcon = d.has_bug ? '🐛' : '✅';
   const statusColor = d.has_bug ? 'orange' : 'green';
-
   const steps = (d.fix_steps || []).map((s, i) =>
-    `<li><span class="step-num">${i+1}</span>${escHtml(s)}</li>`
-  ).join('');
-
+    `<li><span class="step-num">${i+1}</span>${escHtml(s)}</li>`).join('');
   const codeId = 'code-' + Date.now();
   const safeCode = escHtml(d.corrected_code || '');
-
   return `
     <div class="info-card ${statusColor}" style="margin-bottom:14px">
       <div class="card-label">Root Cause ${statusIcon}</div>
@@ -1225,7 +1230,6 @@ function buildSecurity(data) {
     SAFE: 'No vulnerabilities detected — code looks secure.',
     UNKNOWN: 'Analysis incomplete.'
   };
-
   const vulnCards = vulns.map((v, i) => `
     <div class="vuln-card" id="vuln-${i}">
       <div class="vuln-header" onclick="toggleVuln(${i})">
@@ -1247,14 +1251,12 @@ function buildSecurity(data) {
         </div>
       </div>
     </div>`).join('');
-
   const noVulns = `
     <div class="no-vulns">
       <div class="no-vulns-icon">🛡️</div>
       <div class="no-vulns-text">No vulnerabilities detected</div>
       <div class="no-vulns-sub">Your code passed the security scan cleanly.</div>
     </div>`;
-
   return `
     <div class="risk-meter">
       <div class="risk-ring ${s.overall_risk}">${s.overall_risk === 'SAFE' ? '✓' : s.overall_risk?.[0] || '?'}</div>
@@ -1299,30 +1301,26 @@ function toggleVuln(i) {
 function escHtml(str) {
   if (!str) return '';
   return String(str)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 // ── MAIN ANALYSIS ──
 async function runAnalysis() {
-  const code = codeInput.value.trim();
-  const lang = document.getElementById('language').value;
+  const code   = codeInput.value.trim();
+  const lang   = document.getElementById('language').value;
   const errMsg = document.getElementById('error-message').value.trim();
+  const provider = document.getElementById('provider-select').value;
 
-  if (!code) {
-    showToast('Please paste some code first.', 'error');
-    return;
-  }
-  if (code.length > 5000) {
-    showToast('Code exceeds 5,000 characters. Please shorten it.', 'error');
-    return;
-  }
+  if (!code) { showToast('Please paste some code first.', 'error'); return; }
+  if (code.length > 5000) { showToast('Code exceeds 5,000 characters. Please shorten it.', 'error'); return; }
 
   const btn = document.getElementById('analyze-btn');
   btn.classList.add('loading');
   btn.disabled = true;
+
+  const providerLabel = PROVIDER_LABELS[provider] || provider;
+  btn.querySelector('.btn-text') && (btn.querySelector('.btn-text').textContent = `Analyzing with ${providerLabel}...`);
 
   document.getElementById('empty-state').style.display = 'none';
   document.getElementById('results-section').classList.remove('visible');
@@ -1333,7 +1331,7 @@ async function runAnalysis() {
     const res = await fetch('/analyze', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code, language: lang, error_message: errMsg, mode: selectedMode })
+      body: JSON.stringify({ code, language: lang, error_message: errMsg, mode: selectedMode, provider })
     });
 
     if (!res.ok) {
@@ -1344,31 +1342,25 @@ async function runAnalysis() {
     const data = await res.json();
     const elapsed = ((Date.now() - start) / 1000).toFixed(1);
 
-    // Render
-    document.getElementById('debug-content').innerHTML = buildDebug(data, lang);
+    document.getElementById('debug-content').innerHTML   = buildDebug(data, lang);
     document.getElementById('security-content').innerHTML = buildSecurity(data);
-    document.getElementById('learn-content').innerHTML = buildLearn(data);
+    document.getElementById('learn-content').innerHTML    = buildLearn(data);
 
-    // Badges
-    const hasBug = data.debug?.has_bug;
+    const hasBug    = data.debug?.has_bug;
     const vulnCount = data.security?.vulnerabilities?.length || 0;
-    document.getElementById('debug-badge').textContent = hasBug ? '1 bug' : 'clean';
-    document.getElementById('sec-badge').textContent = vulnCount > 0 ? `${vulnCount} found` : 'safe';
+    document.getElementById('debug-badge').textContent   = hasBug ? '1 bug' : 'clean';
+    document.getElementById('sec-badge').textContent     = vulnCount > 0 ? `${vulnCount} found` : 'safe';
+    document.getElementById('results-time').textContent  = `Completed in ${elapsed}s`;
+    document.getElementById('result-provider-tag').textContent = `via ${data._provider || providerLabel}`;
 
-    document.getElementById('results-time').textContent = `Completed in ${elapsed}s`;
     document.getElementById('results-section').classList.add('visible');
-
-    // Re-highlight
     Prism.highlightAll();
 
-    // Auto-switch to most relevant tab
     if (selectedMode === 'debug') switchTab('debug', document.querySelector('.tab'));
-    else if (selectedMode === 'security') {
-      document.querySelectorAll('.tab')[1].click();
-    }
+    else if (selectedMode === 'security') document.querySelectorAll('.tab')[1].click();
 
     document.getElementById('results-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    showToast(`Analysis complete in ${elapsed}s`, 'success');
+    showToast(`${providerLabel} · Analysis complete in ${elapsed}s`, 'success');
 
   } catch (e) {
     document.getElementById('empty-state').style.display = '';
@@ -1376,10 +1368,12 @@ async function runAnalysis() {
   } finally {
     btn.classList.remove('loading');
     btn.disabled = false;
+    const btnText = btn.querySelector('.btn-text');
+    if (btnText) btnText.textContent = 'Analyze Code';
   }
 }
 
-// Enter key shortcut hint
+// Ctrl+Enter shortcut
 codeInput.addEventListener('keydown', e => {
   if (e.ctrlKey && e.key === 'Enter') runAnalysis();
 });
