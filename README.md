@@ -75,10 +75,10 @@ The LLM is used purely as a **structured reasoning engine** — it never speaks 
 | Provider | Model | Route | Cost |
 |---|---|---|---|
 | ⚡ Gemini 2.5 Flash | `gemini-2.5-flash` | Direct Google SDK | Free (Gemini key) |
-| 🤖 GPT-4o Mini | `openai/gpt-4o-mini` | OpenRouter | Paid |
-| 🔮 Claude Haiku | `anthropic/claude-haiku-4.5` | OpenRouter | Paid |
-| 🦙 Llama 3.3 70B | `meta-llama/llama-3.3-70b-instruct` | OpenRouter | Paid |
-| 🆓 Auto Free | `openrouter/auto` | OpenRouter | Free |
+| 🤖 GPT-4o Mini | `openai/gpt-4o-mini` | OpenRouter | Free Version |
+| 🔮 Claude Haiku | `anthropic/claude-haiku-4.5` | OpenRouter | Free Version |
+| 🦙 Llama 3.3 70B | `meta-llama/llama-3.3-70b-instruct` | OpenRouter | Free Version |
+| 🆓 Auto Free | `openrouter/auto` | OpenRouter | Free Version |
 
 `openrouter/auto` dynamically selects from whatever free models are live — it never 404s when specific free endpoints are retired.
 
